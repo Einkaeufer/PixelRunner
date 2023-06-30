@@ -2,7 +2,7 @@ import pygame
 import sys
 from player import Player
 from obstacle import Obstacle
-from coin import Coin  # Import the Coin class
+from coin import Coin
 
 # Initialize Pygame
 pygame.init()
@@ -10,7 +10,17 @@ pygame.init()
 pygame.mixer.init()  # Initialize the mixer module
 pygame.mixer.music.load('drawings/music.ogg')  # Load the music file
 pygame.mixer.music.play(-1)  # Start playing the music. -1 means loop indefinitely
-pygame.mixer.music.set_volume(0.5)  # Set volume to half
+pygame.mixer.music.set_volume(0.3)  # Set volume to half
+
+coin_sound = pygame.mixer.Sound('drawings/coin_collect.ogg')  # Load the coin collection sound
+coin_sound.set_volume(1.0)  # Set volume to full for coin collection sound
+
+oof_sound = pygame.mixer.Sound('drawings/oof.ogg')  # Load the collision sound
+oof_sound.set_volume(1.0)  # Set volume to full for collision sound
+
+jump_sound = pygame.mixer.Sound('drawings/jump.ogg')  # Load the collision sound
+jump_sound.set_volume(0.7)  # Set volume to full for collision sound
+
 
 # Set up some constants
 WIDTH, HEIGHT = 800, 600
@@ -46,6 +56,8 @@ def main():
     clock = pygame.time.Clock()
     run = True
 
+    score = 0  # Initialize score
+
     # Create player, obstacle, and coin
     player_height = 60
     player_y_position = HEIGHT - 50 - player_height
@@ -55,7 +67,7 @@ def main():
     bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))  # This line is to scale your image to fit the window
 
     obstacle = Obstacle(WIDTH, player_y_position, 5, WIDTH, HEIGHT)
-    coin = Coin(WIDTH, player_y_position, 5, WIDTH, player_y_position)
+    coin = Coin(WIDTH, player_y_position, 5, WIDTH, player_y_position)  # Create coin object
 
     score = 0  # Initialize score
 
@@ -72,19 +84,22 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     player.is_jump = True
+                    jump_sound.play()
 
         # Update game state
         player.jump()
         obstacle.move()
         coin.move()  # Move coin
 
-        # Check collision
-        collide_result = player.collide(obstacle, coin)  # Pass coin as argument
-        if collide_result == 'obstacle':
-            game_over(score)  # Pass score to game_over function
-        elif collide_result == 'coin':
-            coin.restart()  # Restart coin if it has been collected
+        if player.collide_with_obstacle(obstacle):
+            oof_sound.play()  # Play the collision sound
+            game_over(score)  # Call game_over function when collision happens, passing score
+
+        # Check coin collection
+        if player.collide_with_coin(coin):
             score += 1  # Increase score
+            coin.restart()  # Restart coin
+            coin_sound.play()  # Play the coin collection sound
 
         # Draw everything
         WIN.blit(bg, (0, 0))  # This line sets the background

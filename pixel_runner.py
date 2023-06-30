@@ -16,12 +16,13 @@ coin_sound = pygame.mixer.Sound('drawings/coin_collect.ogg')  # Load the coin co
 coin_sound.set_volume(1.0)  # Set volume to full for coin collection sound
 
 oof_sound = pygame.mixer.Sound('drawings/oof.ogg')  # Load the collision sound
-oof_sound.set_volume(1.0)  # Set volume to full for collision sound
+oof_sound.set_volume(1.2)  # Set volume to full for collision sound
 
 jump_sound = pygame.mixer.Sound('drawings/jump.ogg')  # Load the collision sound
 jump_sound.set_volume(0.7)  # Set volume to full for collision sound
 
-
+hit_sound = pygame.mixer.Sound('drawings/hit.ogg')  # Load the collision sound
+hit_sound.set_volume(0.7)  # Set volume to full for collision sound
 # Set up some constants
 WIDTH, HEIGHT = 800, 600
 FPS = 60
@@ -92,6 +93,7 @@ def main():
         coin.move()  # Move coin
 
         if player.collide_with_obstacle(obstacle):
+            hit_sound.play()
             oof_sound.play()  # Play the collision sound
             game_over(score)  # Call game_over function when collision happens, passing score
 

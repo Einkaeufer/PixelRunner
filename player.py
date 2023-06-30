@@ -40,3 +40,12 @@ class Player:
                 return 'coin'
         return False
 
+    def collide_with_obstacle(self, obstacle):
+        player_hitbox = pygame.Rect(self.hitbox)
+        obstacle_hitbox = pygame.Rect(obstacle.hitbox)
+        return player_hitbox.colliderect(obstacle_hitbox)
+
+    def collide_with_coin(self, coin):
+        player_hitbox = pygame.Rect(self.hitbox)
+        coin_hitbox = pygame.Rect(coin.hitbox)
+        return player_hitbox.colliderect(coin_hitbox)

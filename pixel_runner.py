@@ -55,7 +55,7 @@ def main():
     bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))  # This line is to scale your image to fit the window
 
     obstacle = Obstacle(WIDTH, player_y_position, 5, WIDTH, HEIGHT)
-    coin = Coin(WIDTH, player_y_position, 5, WIDTH)  # Create coin object
+    coin = Coin(WIDTH, player_y_position, 5, WIDTH, player_y_position)
 
     score = 0  # Initialize score
 
